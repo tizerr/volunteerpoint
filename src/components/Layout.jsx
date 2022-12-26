@@ -1,26 +1,38 @@
 import styled from 'styled-components'
 import {NavLink} from "react-router-dom";
+import {getCurrentUser} from "../utils";
+import {useState} from "react";
+import {Login} from "./Login";
+import {Register} from "./Register";
 
 export const Layout = (props) => {
-    return (
-        <>
+  let [hiddenLogin, setHiddenLogin] = useState(true);
+  let [hiddenRegister, setHiddenRegister] = useState(true);
+  return (
+      <>
+        <Login hidden={hiddenLogin} onChange={(register) => {setHiddenLogin(!hiddenLogin); if (register) setHiddenRegister(!hiddenRegister)}}/>
+        <Register hidden={hiddenRegister} onChange={() => setHiddenRegister(!hiddenRegister)}/>
         <Container>
-            <Header>
-                <HeaderContainer>
-                    <CustomNavLink to='/catalog'>каталог</CustomNavLink>
-                    <CustomNavLink underline to='/'>Volunteer Point</CustomNavLink>
-                    <CustomNavLink to='/profile'>профиль</CustomNavLink>
-                </HeaderContainer>
-            </Header>
-            <Main>
-                {props.children}
-            </Main>
+          <Header>
+            <HeaderContainer>
+              <CustomNavLink to='/catalog'>каталог</CustomNavLink>
+              <CustomNavLink underline='true' to='/'>Volunteer Point</CustomNavLink>
+              {getCurrentUser() ?
+                  <CustomNavLink to='/profile'>профиль</CustomNavLink> :
+                  <Button onClick={() => setHiddenLogin(!hiddenLogin)}>войти</Button>
+              }
+
+            </HeaderContainer>
+          </Header>
+          <Main>
+            {props.children}
+          </Main>
         </Container>
         <Footer>
-            Ilya 2022
+          Ilya 2022
         </Footer>
-        </>
-    )
+      </>
+  )
 }
 
 const Container = styled.div`
@@ -50,8 +62,8 @@ const Header = styled.header`
 `
 
 const Main = styled.main`
-    flex: 1 1 auto;
-    display: flex;
+  flex: 1 1 auto;
+  display: flex;
 `
 
 const Footer = styled.footer`
@@ -65,4 +77,14 @@ const HeaderContainer = styled.div`
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
+`
+
+const Button = styled.button`
+  font-size: 1.5rem;
+  color: white;
+  text-decoration: none;
+  background-color: transparent;
+  outline: 0;
+  border: 0;
+  cursor: pointer;
 `
