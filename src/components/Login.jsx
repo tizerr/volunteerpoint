@@ -1,15 +1,16 @@
 import styled from 'styled-components'
-import {UsersStore} from "../store/users";
+import UsersStore from "../store/users";
 import {useRef, useState} from "react";
+import {observer} from "mobx-react";
 
-async function login(credentials) {
-  return fetch('127.0.0.1:5000/login', {
+async function loginUser(credentials) {
+  return fetch('http://127.0.0.1:5000/auth/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(credentials)
-  }).then(data => data.json())
+  }).then(data => data.json());
 }
 
 export const Login = (props) => {
@@ -18,19 +19,20 @@ export const Login = (props) => {
 
   const handleSubmit = async e => {
       e.preventDefault();
-      const resp = await login({ username: unameRef.current.value, password: pwdRef.current.value})
+      const resp = await loginUser({ username: unameRef.current.value, password: pwdRef.current.value})
       if ('accessToken' in resp) {
         localStorage.setItem('accessToken', resp['accessToken']);
-        window.location.href = "/";
+        props.onChange()
       }
+      UsersStore.currentUser = resp['user'];
   }
   return (
       <BgPanel hidden={props.hidden}>
         <FormContainer>
           <ExitButtonContainer><ExitButton onClick={() => props.onChange()}>X</ExitButton></ExitButtonContainer>
           <Form>
+            <H2>Авторизация</H2>
             <div>
-              <H2>Авторизация</H2>
               <Input ref={unameRef} placeholder='Имя пользователя'/>
               <Input ref={pwdRef} placeholder='Пароль'/>
               <CheckboxContainer><Checkbox type="checkbox"/><label>Остаться в системе</label></CheckboxContainer>
@@ -61,8 +63,9 @@ const BgPanel = styled.div`
 const FormContainer = styled.div`
   background-color: white;
   z-index: 3;
-  width: 60%;
-  height: 70%;
+  width: 70%;
+  height: 90vh;
+  max-height: 600px;
   border-radius: 1rem;
 `
 
@@ -91,10 +94,10 @@ const Form = styled.form`
 `
 const Input = styled.input`
   display: block;
-  width: 80%;
+  width: 70%;
   margin-left: auto;
   margin-right: auto;
-  height: 4rem;
+  height: 4.5rem;
   font-size: 1.5rem;
   outline: 0;
   padding: 0.3rem 0.5rem;
@@ -105,7 +108,7 @@ const Input = styled.input`
   }
 `
 const H2 = styled.h2`
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 500;
   width: 100%;
   text-align: center;
@@ -114,7 +117,7 @@ const H2 = styled.h2`
 
 const CheckboxContainer = styled.div`
   font-size: 1.5rem;
-  width: 80%;
+  width: 70%;
   margin-left: auto;
   margin-right: auto;
   display: flex;
@@ -126,7 +129,7 @@ const Checkbox = styled.input`
   margin-right: 0.75rem;
 `
 const SubmitButton = styled.button`
-  margin: 2rem auto 2rem;
+  margin: 1.5rem auto 1.5rem;
   background-color: #272727;
   display: block;
   color: white;

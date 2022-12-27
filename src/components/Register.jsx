@@ -1,23 +1,46 @@
 import styled from 'styled-components'
 import {UsersStore} from "../store/users";
-import {Link} from "react-router-dom";
-import {useState} from "react";
+import {useRef} from "react";
+
+async function registerUser(credentials) {
+  return fetch('http://localhost:5000/auth/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(credentials)
+  }).then(data => [data.json(), data.status])
+}
 
 export const Register = (props) => {
+  const unameRef = useRef(null);
+  const emailRef = useRef(null);
+  const pwdRef = useRef(null);
+  const pwd2Ref = useRef(null);
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    // td: validation
+    const [resp, status] = await registerUser({ username: unameRef.current.value, email: emailRef.current.value, password: pwdRef.current.value})
+    console.log(resp);
+    if (status === 201) {
+      props.onChange()
+    }
+  }
   return (
       <BgPanel hidden={props.hidden}>
         <FormContainer>
           <ExitButtonContainer><ExitButton onClick={() => props.onChange()}>X</ExitButton></ExitButtonContainer>
           <Form>
+            <H2>Регистрация</H2>
             <div>
-              <H2>Регистрация</H2>
-              <Input placeholder='Имя пользователя'/>
-              <Input placeholder='Email'/>
-              <Input placeholder='Пароль'/>
-              <Input placeholder='Повторите пароль'/>
+              <Input ref={unameRef} placeholder='Имя пользователя'/>
+              <Input ref={emailRef} placeholder='Email'/>
+              <Input ref={pwdRef} placeholder='Пароль'/>
+              <Input ref={pwd2Ref} placeholder='Повторите пароль'/>
             </div>
             <div>
-              <SubmitButton type='submit'>Создать аккаунт</SubmitButton>
+              <SubmitButton type='submit' onClick={handleSubmit}>Создать аккаунт</SubmitButton>
             </div>
           </Form>
         </FormContainer>
@@ -42,8 +65,9 @@ const FormContainer = styled.div`
   background-color: white;
   z-index: 3;
   width: 70%;
-  height: 80%;
+  height: 90vh;
   border-radius: 1rem;
+  max-height: 700px;
 `
 
 const ExitButton = styled.button`
@@ -81,52 +105,22 @@ const Input = styled.input`
   border-radius: 0.3rem;
   border: 0.1rem solid black;
   :not(:last-child) {
-    margin-bottom: 2.5rem;
+    margin-bottom: 1.5rem;
   }
 `
 const H2 = styled.h2`
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: 500;
   width: 100%;
   text-align: center;
   margin-bottom: 1.5rem;
 `
-
-const CheckboxContainer = styled.div`
-  font-size: 1.5rem;
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  align-items: center;
-`
-const Checkbox = styled.input`
-  width: 1.5rem;
-  height: 1.5rem;
-  margin-right: 0.75rem;
-`
 const SubmitButton = styled.button`
-  margin: 2rem auto 2rem;
+  margin: 1rem auto 1rem;
   background-color: #272727;
   display: block;
   color: white;
   padding: 1rem 5rem;
   font-size: 1.5rem;
   border-radius: 0.5rem;
-`
-
-const RegisterButton = styled.button`
-  background-color: transparent;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-  color: #272727;
-  font-size: 1.2rem;
-  outline: 0;
-  border: 0;
-  text-decoration: underline;
-  cursor: pointer;
-  :hover {
-    color: gray;
-  }
 `

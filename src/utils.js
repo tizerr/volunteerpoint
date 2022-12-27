@@ -1,3 +1,3 @@
-export function getCurrentUser() {
-    return localStorage.getItem('currentUser') || undefined
+export function getAccessToken() {
+    return localStorage.getItem('accessToken') || undefined
 }

@@ -1,11 +1,12 @@
 import styled from 'styled-components'
 import {NavLink} from "react-router-dom";
-import {getCurrentUser} from "../utils";
 import {useState} from "react";
 import {Login} from "./Login";
 import {Register} from "./Register";
+import UsersStore from '../store/users'
+import {observer} from "mobx-react";
 
-export const Layout = (props) => {
+export const Layout = observer((props) => {
   let [hiddenLogin, setHiddenLogin] = useState(true);
   let [hiddenRegister, setHiddenRegister] = useState(true);
   return (
@@ -17,8 +18,8 @@ export const Layout = (props) => {
             <HeaderContainer>
               <CustomNavLink to='/catalog'>каталог</CustomNavLink>
               <CustomNavLink underline='true' to='/'>Volunteer Point</CustomNavLink>
-              {getCurrentUser() ?
-                  <CustomNavLink to='/profile'>профиль</CustomNavLink> :
+              {UsersStore.currentUser ?
+                  <CustomNavLink to={`/user/${UsersStore.currentUser.id}`}>профиль</CustomNavLink> :
                   <Button onClick={() => setHiddenLogin(!hiddenLogin)}>войти</Button>
               }
 
@@ -33,7 +34,7 @@ export const Layout = (props) => {
         </Footer>
       </>
   )
-}
+});
 
 const Container = styled.div`
   display: flex;
@@ -77,6 +78,12 @@ const HeaderContainer = styled.div`
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
+  @media (max-width: 800px) {
+    width: 60%;
+  }
+  @media (max-width: 600px) {
+    width: 80%;
+  }
 `
 
 const Button = styled.button`
