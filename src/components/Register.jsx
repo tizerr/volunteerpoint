@@ -64,8 +64,8 @@ const BgPanel = styled.div`
 const FormContainer = styled.div`
   background-color: white;
   z-index: 3;
-  width: 70%;
-  height: 90vh;
+  width: 65%;
+  height: 80vh;
   border-radius: 1rem;
   max-height: 700px;
 `

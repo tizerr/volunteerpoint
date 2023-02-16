@@ -18,6 +18,10 @@ class User(db.Model):
     password_hash = db.Column(db.String(128))
     is_moderator = db.Column(db.Boolean, default=False)
     is_confirmed = db.Column(db.Boolean, default=False)
+    description = db.Column(db.Text)
+    age = db.Column(db.Integer)
+    address = db.Column(db.String(120))
+    img_path = db.Column(db.String(120))
 
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     date_confirmation_expire = db.Column(db.DateTime, nullable=False, default=datetime.utcnow() + timedelta(days=1))
@@ -67,7 +71,9 @@ class Event(db.Model):
     address = db.Column(db.String(100), nullable=False)
     coord_x = db.Column(db.Integer, nullable=False)
     coord_y = db.Column(db.Integer, nullable=False)
+    img_path = db.Column(db.String(120))
     is_published = db.Column(db.Boolean, default=False)
+    was_moderated = db.Column(db.Boolean, default=False)
 
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     date_start = db.Column(db.DateTime, nullable=False)

@@ -2,7 +2,6 @@ from flask import Flask
 #
 from flask_cors import CORS
 from flask_migrate import Migrate
-from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 #
 from config import Config
@@ -11,7 +10,7 @@ from config import Config
 app = Flask(__name__)
 app.config.from_object(Config)
 
-cors = CORS(app, resources={r"/auth/*": {"origins": "*"}})
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 db = SQLAlchemy(app)
 with app.test_request_context():
@@ -20,10 +19,8 @@ with app.test_request_context():
 
 migrate = Migrate(app, db)
 
-api = Api(app)
-
 from routes import *
 from models import *
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

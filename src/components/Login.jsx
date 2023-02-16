@@ -2,6 +2,8 @@ import styled from 'styled-components'
 import UsersStore from "../store/users";
 import {useRef, useState} from "react";
 import {observer} from "mobx-react";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faXmark} from "@fortawesome/free-solid-svg-icons";
 
 async function loginUser(credentials) {
   return fetch('http://127.0.0.1:5000/auth/login', {
@@ -14,12 +16,12 @@ async function loginUser(credentials) {
 }
 
 export const Login = (props) => {
-  const unameRef = useRef(null);
+  const emailRef = useRef(null);
   const pwdRef = useRef(null);
 
   const handleSubmit = async e => {
       e.preventDefault();
-      const resp = await loginUser({ username: unameRef.current.value, password: pwdRef.current.value})
+      const resp = await loginUser({ email: emailRef.current.value, password: pwdRef.current.value})
       if ('accessToken' in resp) {
         localStorage.setItem('accessToken', resp['accessToken']);
         props.onChange()
@@ -29,11 +31,11 @@ export const Login = (props) => {
   return (
       <BgPanel hidden={props.hidden}>
         <FormContainer>
-          <ExitButtonContainer><ExitButton onClick={() => props.onChange()}>X</ExitButton></ExitButtonContainer>
+          <ExitButtonContainer><ExitButton onClick={() => props.onChange()}><FontAwesomeIcon icon={faXmark}/></ExitButton></ExitButtonContainer>
           <Form>
             <H2>Авторизация</H2>
             <div>
-              <Input ref={unameRef} placeholder='Имя пользователя'/>
+              <Input ref={emailRef} placeholder='Электронная почта'/>
               <Input ref={pwdRef} placeholder='Пароль'/>
               <CheckboxContainer><Checkbox type="checkbox"/><label>Остаться в системе</label></CheckboxContainer>
             </div>
@@ -63,7 +65,7 @@ const BgPanel = styled.div`
 const FormContainer = styled.div`
   background-color: white;
   z-index: 3;
-  width: 70%;
+  width: 65%;
   height: 90vh;
   max-height: 600px;
   border-radius: 1rem;
